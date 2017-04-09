@@ -1,0 +1,10 @@
+
+# IDEA #
+.idea/
+*.iml
+out/
+lib/
+
+# logs #
+*.log
+logs/
