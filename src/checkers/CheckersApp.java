@@ -9,10 +9,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CheckersApp extends Application {
 
     //6:01
-
+    private boolean move = true;
     public static final int TILE_SIZE = 100; //px
     public static final int WIDTH = 8;
     public static final int HEIGHT = 8;
@@ -22,9 +25,12 @@ public class CheckersApp extends Application {
     private Group tileGroup = new Group();
     private Group pieceGroup = new Group();
 
+    private List<Piece> piecesList;
+    private List<Piece> checkedPieces;
+
     private Parent createContent() {
         GridPane root = new GridPane();
-        root.setPrefSize(1000, 1000);
+        root.setPrefSize(800, 800);
         root.setAlignment(Pos.CENTER);
 
         Pane board = new Pane();
@@ -61,6 +67,9 @@ public class CheckersApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        checkedPieces = new ArrayList<>();
+        piecesList = new ArrayList<>();
+
         Scene scene = new Scene(createContent());
         scene.getStylesheets().add(getClass().getResource("resources/root.css").toExternalForm());
         primaryStage.setTitle("Checkers");
@@ -73,12 +82,13 @@ public class CheckersApp extends Application {
         piece.setOnMouseReleased(e->{
             int newX = toGameBoard(piece.getLayoutX());
             int newY = toGameBoard(piece.getLayoutY());
-
+//TODO operowac na liscie zaznaczonych
             MoveResult result = tryMove(piece,newX,newY);
 
             int x0 = toGameBoard(piece.getOldX());
             int y0 = toGameBoard(piece.getOldY());
 
+            //TODO operacje wykonywac dla kazdego zaznaczonego
             switch (result.getType()) {
                 case NONE:
                     piece.abortMove();
@@ -99,7 +109,7 @@ public class CheckersApp extends Application {
                     break;
             }
         });
-
+        piecesList.add(piece);
         return piece;
     }
 
@@ -108,6 +118,51 @@ public class CheckersApp extends Application {
     }
 
     private MoveResult tryMove(Piece piece, int newX, int newY){
+// TODO złe newX i newY
+        //TODO usunac ruch w mmsc gdzie jest pionek
+        //TODO enum z ruchami w 3 pola i rozpoznawac pola dla kazdego pionka
+//        List<MoveResult> moveResults = new ArrayList<>();
+//        piecesList.forEach( e-> {
+//            if(e.getCheck().isSelected()){
+//                checkedPieces.add(e);
+//            }
+//        });
+//
+//        checkedPieces.forEach(e->{
+//            if(gameBoard[newX][newY].hasPiece()){
+//                moveResults.add(new MoveResult(MoveType.NONE));
+//            }
+//
+//            int x0 = toGameBoard(e.getPiece().getOldX());
+//            int y0 = toGameBoard(e.getPiece().getOldY());
+//            //22:22
+//
+//            if((newY - y0) == e.getPiece().getType().moveDir || newY == y0){
+//                moveResults.add(new MoveResult(MoveType.NORMAL));
+//            } else if(Math.abs(newX - x0) == 2 && (newY - y0) == e.getPiece().getType().moveDir * 2){
+//
+//                int x1 = x0 +(newX - x0)/2;
+//                int y1 = y0 +(newY - y0)/2;
+//
+//                if(gameBoard[x1][y1].hasPiece() && gameBoard[x1][y1].getPiece().getType() != e.getPiece().getType()){
+//                    moveResults.add(new MoveResult(MoveType.KILL, gameBoard[x1][y1].getPiece()));
+//                }
+//            }
+//            moveResults.add(new MoveResult(MoveType.NONE));
+//        });
+//
+//        moveResults.forEach( e->{
+//            if( e.getType() == MoveType.NONE){
+//                move = false;
+//            }
+//        });
+//
+//        if(move){
+//            return new MoveResult(MoveType.NORMAL);
+//        } else {
+//            return new MoveResult(MoveType.NONE);
+//        }
+
         if(gameBoard[newX][newY].hasPiece()){
             return new MoveResult(MoveType.NONE);
         }
@@ -116,7 +171,7 @@ public class CheckersApp extends Application {
         int y0 = toGameBoard(piece.getOldY());
         //22:22
 
-        if(Math.abs(newX - x0) == 1 && (newY - y0) == piece.getType().moveDir){
+        if((newY - y0) == piece.getType().moveDir || newY == y0){
             return new MoveResult(MoveType.NORMAL);
         } else if(Math.abs(newX - x0) == 2 && (newY - y0) == piece.getType().moveDir * 2){
 

@@ -1,5 +1,6 @@
 package checkers;
 
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
@@ -13,6 +14,7 @@ public class Piece extends StackPane {
     private PieceType type;
     private double mouseX, mouseY;
     private double oldX, oldY;
+    private CheckBox check;
 
     public Piece(PieceType type, int x, int y) {
         this.type = type;
@@ -36,9 +38,9 @@ public class Piece extends StackPane {
         ellipse.setTranslateX((tileSize - tileSize * 0.3125 * 2) / 2);
         ellipse.setTranslateY((tileSize - tileSize * 0.26 * 2) / 2);
 
+        check = new CheckBox();
 
-        getChildren().addAll(bg, ellipse);
-
+        getChildren().addAll(bg, ellipse, check);
         setOnMousePressed(e->{
             mouseX = e.getSceneX();
             mouseY = e.getSceneY();
@@ -69,5 +71,12 @@ public class Piece extends StackPane {
 
     public double getOldY() {
         return oldY;
+    }
+    public Piece getPiece(){
+        return this;
+    }
+
+    public CheckBox getCheck() {
+        return check;
     }
 }
